@@ -16,6 +16,10 @@ cloudmesh:
     exceptions: []
   iu:
     user: TBD
+    host: r-003
+    gpu: 0
+    port: TBD
+    reservation: lijguo_11
   default:
     group: cloudmesh
     experiment: base
