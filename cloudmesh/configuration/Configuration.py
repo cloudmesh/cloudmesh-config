@@ -391,3 +391,21 @@ class Configuration(object):
             Console.error(
                 "could not find the attribute '{attribute}' in the yaml file."
                     .format(**locals()))
+
+    def cat_dict(self, d):
+        kluge = yaml.dump(d,
+                          default_flow_style=False, indent=2)
+        content = kluge.splitlines()
+
+        return self.cat_lines(content, mask_secrets=mask_secrets)
+
+    def cat_lines(self, content):
+        lines = '\n'.join(content)
+        return lines
+
+    def cat(self):
+
+        _path = path_expand(self.path)
+        with open(_path) as f:
+            content = f.read().splitlines()
+        return self.cat_lines(content)
