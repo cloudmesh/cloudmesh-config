@@ -27,9 +27,6 @@ cat was removed
 
 class Configuration(object):
 
-    def set_filename(self, path='~/.cloudmesh/cloudmesh.yaml'):
-        self.filename = path
-
     def __init__(self,
                  path='~/.cloudmesh/cloudmesh.yaml'):
         """
@@ -42,7 +39,7 @@ class Configuration(object):
 
         self.path = path
 
-        self.load(path=self.filename)
+        self.load(path=self.path)
 
     def load(self, path=None):
         """
