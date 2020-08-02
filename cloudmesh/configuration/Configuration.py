@@ -5,6 +5,7 @@ from os.path import isfile, realpath, exists, dirname
 from pathlib import Path
 from shutil import copyfile
 
+from cloudmesh.common.dotdict import dotdict
 import munch
 import oyaml as yaml
 from cloudmesh.common.FlatDict import FlatDict
@@ -45,6 +46,10 @@ class Configuration(object):
         for name in ["trace", "debug"]:
             if name not in self.variable_database:
                 self.variable_database[name] = str(False)
+
+    def default(self):
+        return dotdict(self.data["cloudmesh"]["default"])
+
 
     def load(self, path=None):
         """
