@@ -41,6 +41,11 @@ class Configuration(object):
 
         self.load(path=self.path)
 
+    def set_debug_defaults(self):
+        for name in ["trace", "debug"]:
+            if name not in self.variable_database:
+                self.variable_database[name] = str(False)
+
     def load(self, path=None):
         """
         loads a configuration file
