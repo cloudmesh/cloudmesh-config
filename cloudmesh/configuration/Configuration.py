@@ -1,7 +1,5 @@
-import os
 import re
 import shutil
-import sys
 from os import mkdir
 from os.path import isfile, realpath, exists, dirname
 from pathlib import Path
@@ -9,34 +7,31 @@ from shutil import copyfile
 
 import munch
 import oyaml as yaml
-import requests
 from cloudmesh.common.FlatDict import FlatDict
-from cloudmesh.common.FlatDict import flatten
-from cloudmesh.common.Shell import Shell
 from cloudmesh.common.console import Console
-from cloudmesh.common.dotdict import dotdict
 from cloudmesh.common.util import backup_name
-from cloudmesh.common.util import banner
 from cloudmesh.common.util import path_expand
-from cloudmesh.common.util import writefile
 from cloudmesh.common.variables import Variables
-from cloudmesh.configuration import __version__ as cloudmesh_yaml_version
-from cloudmesh.common.location import Location
+
+import sys
+
 """
 This clas is similar to Config, but does not contain a shared state for the location where to find it.
 It also does not mask secrets.
 cat was removed
 """
 
-# see also https://github.com/cloudmesh/client/blob/master/cloudmesh_client/cloud/register.py
 
+# see also https://github.com/cloudmesh/client/blob/master/cloudmesh_client/cloud/register.py
 
 
 class Configuration(object):
 
+    def set_filename(self, path='~/.cloudmesh/cloudmesh.yaml'):
+        self.filename = path
+
     def __init__(self,
-                 config_path='~/.cloudmesh/cloudmesh.yaml',
-                 encrypted=False):
+                 path='~/.cloudmesh/cloudmesh.yaml'):
         """
         Initialize the Config class.
 
@@ -45,70 +40,31 @@ class Configuration(object):
             Default: `~/.cloudmesh/cloudmesh.yaml`
         """
 
-        if ".yaml" in config_path:
-            p = os.path.dirname(config_path)
-        else:
-            p = config_path
+        self.path = path
 
-        self.location = Location(directory=p)
+        self.load(path=self.filename)
 
-        self.load(config_path=self.location.config())
-
-        # self.load(config_path=config_path)
-        try:
-            self.user = self["cloudmesh.profile.user"]
-        except:
-            pass
-
-    def fetch(self,
-              url=None,
-              destination=None):
-        """
-
-        fetches the cloudmesh yaml file and places it in the given
-        destination dir
-
-        :param url: The url of the cloudmesh.yaml file from github
-        :param destination: The destination file. If not specified it is the
-                             home dir.
-        :return:
-        """
-        if url is None:
-            url = "https://raw.githubusercontent.com/cloudmesh/cloudmesh-configuration/master/cloudmesh/configuration/etc/cloudmesh.yaml"
-        if destination is None:
-            destination = "~/.cloudmesh/cloudmesh.yaml"
-
-        destination = path_expand(destination)
-
-        Shell.mkdir("~/.cloudmesh")
-
-        r = requests.get(url)
-        content = r.text
-
-        writefile(destination, content)
-
-    def load(self, config_path=None):
+    def load(self, path=None):
         """
         loads a configuration file
-        :param config_path:
-        :type config_path:
+        :param path:
+        :type path:
         :return:
         :rtype:
         """
 
         # VERBOSE("Load config")
-        self.config_path = Path(path_expand(config_path or self.location.config())).resolve()
+        self.filename = Path(path_expand(path))
 
-        self.config_folder = dirname(self.config_path)
+        self.config_folder = dirname(self.path)
 
-        self.create(config_path=config_path)
+        self.create(path=path)
 
-        with open(self.config_path, "r") as stream:
+        with open(self.path, "r") as stream:
             content = stream.read()
             # content = path_expand(content)
             content = self.spec_replace(content)
             self.data = yaml.load(content, Loader=yaml.SafeLoader)
-
 
         # print (self.data["cloudmesh"].keys())
 
@@ -139,7 +95,7 @@ class Configuration(object):
         else:
             self.cloud = None
 
-    def create(self, config_path=None):
+    def create(self, path=None):
         """
         creates the cloudmesh.yaml file in the specified location. The
         default is
@@ -149,20 +105,20 @@ class Configuration(object):
         If the file does not exist, it is initialized with a default. You still
         need to edit the file.
 
-        :param config_path:  The yaml file to create
-        :type config_path: string
+        :param path:  The yaml file to create
+        :type path: string
         """
-        self.config_path = Path(path_expand(config_path or self.location.config())).resolve()
+        self.path = Path(path_expand(path))
 
-        self.config_folder = dirname(self.config_path)
+        self.config_folder = dirname(self.path)
 
         if not exists(self.config_folder):
             mkdir(self.config_folder)
 
-        if not isfile(self.config_path):
+        if not isfile(self.path):
             source = Path(dirname(realpath(__file__)) + "/etc/cloudmesh.yaml")
 
-            copyfile(source.resolve(), self.config_path)
+            copyfile(source.resolve(), self.path)
 
             # read defaults
             self.__init__()
@@ -199,7 +155,7 @@ class Configuration(object):
             destination = backup_name(path)
             shutil.copyfile(path, destination)
         yaml_file = self.data.copy()
-        with open(self.config_path, "w") as stream:
+        with open(self.path, "w") as stream:
             yaml.safe_dump(yaml_file, stream, default_flow_style=False)
 
     def spec_replace(self, spec):
@@ -261,7 +217,7 @@ class Configuration(object):
             return self.__getitem__(key)
         except KeyError:
             if default is None:
-                path = self.config_path
+                path = self.path
                 Console.warning(
                     "The key '{key}' could not be found in the yaml file '{path}'".format(
                         **locals()))
@@ -310,7 +266,7 @@ class Configuration(object):
                 self.data[key] = value
 
         except KeyError:
-            path = self.config_path
+            path = self.path
             Console.error(
                 "The key '{key}' could not be found in the yaml file '{path}'".format(
                     **locals()))
@@ -320,7 +276,7 @@ class Configuration(object):
             sys.exit(1)
 
         yaml_file = self.data.copy()
-        with open(self.config_path, "w") as stream:
+        with open(self.path, "w") as stream:
             yaml.safe_dump(yaml_file, stream, default_flow_style=False)
 
     def __getitem__(self, item):
@@ -340,7 +296,7 @@ class Configuration(object):
             for key in keys[1:]:
                 element = element[key]
         except KeyError:
-            path = self.config_path
+            path = self.path
             Console.warning(
                 "The key '{item}' could not be found in the yaml file '{path}'".format(
                     **locals()))
@@ -375,7 +331,7 @@ class Configuration(object):
                 element = element[key]
             del element
         except KeyError:
-            path = self.config_path
+            path = self.path
             Console.error(
                 "The key '{item}' could not be found in the yaml file '{path}'".format(
                     **locals()))
@@ -428,4 +384,3 @@ class Configuration(object):
             Console.error(
                 "could not find the attribute '{attribute}' in the yaml file."
                     .format(**locals()))
-
