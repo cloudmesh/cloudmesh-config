@@ -397,7 +397,7 @@ class Configuration(object):
                           default_flow_style=False, indent=2)
         content = kluge.splitlines()
 
-        return self.cat_lines(content, mask_secrets=mask_secrets)
+        return self.cat_lines(content)
 
     def cat_lines(self, content):
         lines = '\n'.join(content)
