@@ -23,7 +23,7 @@ from cloudmesh.common.variables import Variables
 from cloudmesh.configuration import __version__ as cloudmesh_yaml_version
 from cloudmesh.common.location import Location
 
-# see also https://github.com/cloudmesh/client/blob/master/cloudmesh_client/cloud/register.py
+# see also https://github.com/cloudmesh/client/blob/main/cloudmesh_client/cloud/register.py
 
 class Active(object):
 
@@ -133,7 +133,7 @@ class Config(object):
         :return:
         """
         if url is None:
-            url = "https://raw.githubusercontent.com/cloudmesh/cloudmesh-configuration/master/cloudmesh/configuration/etc/cloudmesh.yaml"
+            url = "https://raw.githubusercontent.com/cloudmesh/cloudmesh-configuration/main/cloudmesh/configuration/etc/cloudmesh.yaml"
         if destination is None:
             destination = "~/.cloudmesh/cloudmesh.yaml"
 
@@ -290,7 +290,7 @@ class Config(object):
             print("See also: ")
             print()
             print(
-                "  https://github.com/cloudmesh/cloudmesh-configuration/blob/master/cloudmesh/configuration/etc/cloudmesh.yaml")
+                "  https://github.com/cloudmesh/cloudmesh-configuration/blob/main/cloudmesh/configuration/etc/cloudmesh.yaml")
 
         banner("Check for TAB Characters")
 

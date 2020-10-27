@@ -23,7 +23,7 @@ cat was removed
 """
 
 
-# see also https://github.com/cloudmesh/client/blob/master/cloudmesh_client/cloud/register.py
+# see also https://github.com/cloudmesh/client/blob/main/cloudmesh_client/cloud/register.py
 
 
 class Configuration(object):
