@@ -198,6 +198,26 @@ cloudmesh:
         token_uri: https://oauth2.googleapis.com/token
         auth_provider_x509_cert_url: https://www.googleapis.com/oauth2/v1/certs
         client_x509_cert_url: https://www.googleapis.com/robot/v1/metadata/x509/TBD%40imposing-coast-257700.iam.gserviceaccount.com
+    oracle:
+      cm:
+        active: true
+        heading: Oracle
+        host: cloud.oracle.com
+        label: oracle
+        kind: oracle
+        version: TBD
+        service: storage
+      default:
+        directory: TBD
+        bucket: home
+      credentials:
+        user: TBD
+        fingerprint: TBD
+        key_file: ~/.oci/oci_api_key.pem
+        pass_phrase: TBD
+        tenancy: TBD
+        compartment_id: TBD
+        region: us-ashburn-1
   volume:
     aws:
         cm:
