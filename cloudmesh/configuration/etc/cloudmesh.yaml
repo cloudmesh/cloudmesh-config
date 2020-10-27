@@ -53,6 +53,22 @@ cloudmesh:
           api_key: TBD
           api_secret: TBD
   storage:
+    local:
+      cm:
+        active: true
+        blobactive: true
+        heading: local storage
+        host: localhost
+        kind: local
+        label: local_storage
+        version: 0.1
+        service: storage
+      default:
+        directory: ~/.cloudmesh/storage
+      credentials:
+        userid: None
+        password: None
+        directory: ~/.cloudmesh/storage
     storage_a:
       cm:
         active: false
