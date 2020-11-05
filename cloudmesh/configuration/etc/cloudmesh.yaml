@@ -28,30 +28,137 @@ cloudmesh:
     trace: true
     debug: true
     timer: false
-  comet:
-    username: TBD
-    active: production
-    endpoints:
-      dev:
-        nucleus_base_url: https://comet-nucleus-dev.sdsc.edu/nucleus
-        api_version: v1
-        auth_provider: apikey
-        userpass:
+  cloud:
+    azure:
+      cm:
+        active: true
+        heading: Azure
+        host: azure.microsoft.com
+        label: Azure
+        kind: azure
+        version: latest
+        service: compute
+      default:
+        image: Canonical:UbuntuServer:16.04.0-LTS:latest
+        size: Basic_A0
+        group: cloudmesh
+        storage_account: cmdrive
+        network: cmnetwork
+        subnet: cmsubnet
+        blob_container: vhds
+        AZURE_VM_IP_CONFIG: cloudmesh-ip-config
+        AZURE_VM_NIC: cloudmesh-nic
+        AZURE_VM_DISK_NAME: cloudmesh-os-disk
+        AZURE_VM_USER: TBD
+        AZURE_VM_PASSWORD: TBD
+        AZURE_VM_NAME: cloudmeshVM
+      credentials:
+        AZURE_TENANT_ID: xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        AZURE_SUBSCRIPTION_ID: xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        AZURE_APPLICATION_ID: xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        AZURE_SECRET_KEY: TBD
+        AZURE_REGION: eastus
+    aws:
+      cm:
+        active: true
+        heading: AWS
+        host: aws.amazon.com
+        label: aws
+        kind: aws
+        version: TBD
+        service: compute
+      default:
+        image: ami-0c929bde1796e1484
+        size: t2.medium
+        username: ec2-user
+      credentials:
+        region: us-east-2
+        EC2_SECURITY_GROUP: cloudmesh
+        EC2_ACCESS_ID: TBD
+        EC2_SECRET_KEY: TBD
+        EC2_PRIVATE_KEY_FILE_PATH: ~/.cloudmesh/aws_cert.pem
+        EC2_PRIVATE_KEY_FILE_NAME: aws_cert
+    google:
+      cm:
+        active: true
+        heading: google
+        host: google.cloud.com
+        label: google
+        kind: google
+        version: TBD
+        service: compute
+      default:
+        image: ubuntu-2004-lts
+        size: n1-standard-4
+      credentials:
+        datacenter: us-central1-a
+        client_email: TBD.serviceaccount.iam.gserviceaccount.com
+        project: TBD
+        path_to_json_file: ~/.cloudmesh/TBD
+    chameleon:
+      cm:
+        active: true
+        heading: Chameleon
+        host: chameleoncloud.org
+        label: chameleon
+        kind: openstack
+        version: train
+        service: compute
+      credentials:
+        auth:
           username: TBD
           password: TBD
-        apikey:
-          api_key: TBD
-          api_secret: TBD
-      production:
-        nucleus_base_url: https://comet-nucleus.sdsc.edu/nucleus
-        api_version: v1
-        auth_provider: apikey
-        userpass:
-          username: TBD
-          password: TBD
-        apikey:
-          api_key: TBD
-          api_secret: TBD
+          auth_url: "https://kvm.tacc.chameleoncloud.org:5000/v3"
+          project_id: 7767f9aac3c143de8b1f0e6acc70f159
+          project_name: cloudmesh
+          user_domain_name: "Default"
+        region_name: "KVM@TACC"
+        interface: "public"
+        identity_api_version: "3"
+        key_path: ~/.ssh/id_rsa.pub
+      default:
+        size: m1.medium
+        image: CC-Ubuntu18.04
+        username: cc
+        network: e01ee12e-fd22-4b21-a050-d3e015f42bb1
+    jetstream:
+      cm:
+        active: true
+        heading: Jetstream
+        host: http://jetstream-cloud.org/
+        label: jetstream
+        kind: openstack
+        version: kilo
+        service: compute
+      credentials:
+        OS_PROJECT_DOMAIN_NAME: tacc
+        OS_USER_DOMAIN_NAME: tacc
+        OS_PROJECT_ID: 7bfa792867a141e6855fdaaa2a960a4e
+        OS_PROJECT_NAME: TG-CIE170003
+        OS_TENANT_NAME: TG-CIE170003
+        OS_USERNAME: TBD
+        OS_PASSWORD: TBD
+        OS_AUTH_URL: https://tacc.jetstream-cloud.org:5000
+        OS_IDENTITY_API_VERSION: 3
+        OS_INTERFACE: public
+        OS_REGION_NAME: RegionOne
+      default:
+        size: m1.small
+        image: Ubuntu-Server-14.04-LTS
+    docker:
+      cm:
+        active: true
+        heading: Docker
+        host: localhost
+        label: docker
+        kind: docker
+        version: 18.09.2
+        service: compute
+      default:
+        os: ubuntu
+        version: '18.04'
+      credentials:
+        key: ~/.ssh/id_rsa
   storage:
     local:
       cm:
@@ -310,187 +417,6 @@ cloudmesh:
         password: TBD
         driver: '{ODBC Driver 17 for SQL Server}'
         name: TBD
-  cloud:
-    docker:
-      cm:
-        active: true
-        heading: Docker
-        host: localhost
-        label: docker
-        kind: docker
-        version: 18.09.2
-        service: compute
-      default:
-        os: ubuntu
-        version: '18.04'
-      credentials:
-        key: ~/.ssh/id_rsa
-    azure:
-      cm:
-        active: true
-        heading: Azure
-        host: azure.microsoft.com
-        label: Azure
-        kind: azure
-        version: latest
-        service: compute
-      default:
-        image: Canonical:UbuntuServer:16.04.0-LTS:latest
-        size: Basic_A0
-        group: cloudmesh
-        storage_account: cmdrive
-        network: cmnetwork
-        subnet: cmsubnet
-        blob_container: vhds
-        AZURE_VM_IP_CONFIG: cloudmesh-ip-config
-        AZURE_VM_NIC: cloudmesh-nic
-        AZURE_VM_DISK_NAME: cloudmesh-os-disk
-        AZURE_VM_USER: TBD
-        AZURE_VM_PASSWORD: TBD
-        AZURE_VM_NAME: cloudmeshVM
-      credentials:
-        AZURE_TENANT_ID: xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-        AZURE_SUBSCRIPTION_ID: xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-        AZURE_APPLICATION_ID: xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-        AZURE_SECRET_KEY: TBD
-        AZURE_REGION: eastus
-    aws:
-      cm:
-        active: true
-        heading: AWS
-        host: aws.amazon.com
-        label: aws
-        kind: aws
-        version: TBD
-        service: compute
-      default:
-        image: ami-0c929bde1796e1484
-        size: t2.medium
-      credentials:
-        region: us-east-2
-        EC2_SECURITY_GROUP: cloudmesh
-        EC2_ACCESS_ID: TBD
-        EC2_SECRET_KEY: TBD
-        EC2_PRIVATE_KEY_FILE_PATH: ~/.cloudmesh/aws_cert.pem
-        EC2_PRIVATE_KEY_FILE_NAME: aws_cert
-    google:
-      cm:
-        active: true
-        heading: google
-        host: google.cloud.com
-        label: google
-        kind: google
-        version: TBD
-        service: compute
-      default:
-        image: Image Name
-        size: n1-standard-4
-      credentials:
-        datacenter: us-central1-a
-        client_email: <service account>.iam.gserviceaccount.com
-        project: <Project Name>
-        path_to_json_file: ~/.cloudmesh/<file with credentials>
-    chameleon:
-      cm:
-        active: true
-        heading: Chameleon
-        host: chameleoncloud.org
-        label: chameleon
-        kind: openstack
-        version: train
-        service: compute
-      credentials:
-        auth:
-          username: TBD
-          password: TBD
-          auth_url: "https://kvm.tacc.chameleoncloud.org:5000/v3"
-          project_id: 7767f9aac3c143de8b1f0e6acc70f159
-          project_name: cloudmesh
-          user_domain_name: "Default"
-        region_name: "KVM@TACC"
-        interface: "public"
-        identity_api_version: "3"
-        key_path: ~/.ssh/id_rsa.pub
-      default:
-        size: m1.medium
-        image: CC-Ubuntu18.04
-        username: cc
-        network: e01ee12e-fd22-4b21-a050-d3e015f42bb1
-    jetstream:
-      cm:
-        active: true
-        heading: Jetstream
-        host: http://jetstream-cloud.org/
-        label: jetstream
-        kind: openstack
-        version: kilo
-        service: compute
-      credentials:
-        OS_PROJECT_DOMAIN_NAME: tacc
-        OS_USER_DOMAIN_NAME: tacc
-        OS_PROJECT_ID: 7bfa792867a141e6855fdaaa2a960a4e
-        OS_PROJECT_NAME: TG-CIE170003
-        OS_TENANT_NAME: TG-CIE170003
-        OS_USERNAME: TBD
-        OS_PASSWORD: TBD
-        OS_AUTH_URL: https://tacc.jetstream-cloud.org:5000
-        OS_IDENTITY_API_VERSION: 3
-        OS_INTERFACE: public
-        OS_REGION_NAME: RegionOne
-      default:
-        size: m1.small
-        image: Ubuntu-Server-14.04-LTS
-    cybera:
-      cm:
-        active: false
-        heading: Cybera Edmonton OpenStack
-        host: cybera
-        label: kilo
-        kind: openstack
-        version: kilo
-        service: compute
-      credentials:
-        OS_AUTH_URL: https://vm.tacc.chameleoncloud.org:5000/v3
-        OS_TENANT_ID: TBD
-        OS_TENANT_NAME: TBD
-        OS_PROJECT_NAME: TBD
-        OS_USERNAME: TBD
-        OS_PASSWORD: TBD
-        OS_REGION_NAME: Edmonton
-      default:
-        size: m1.small
-        image: Ubuntu 14.04
-    vagrant:
-      credentials:
-        local: true
-        hostname: localhost
-      cm:
-        active: true
-        heading: Vagrant
-        host: TBD
-        label: TBD
-        kind: TBD
-        version: TBD
-        service: compute
-      default:
-        path: ~/.cloudmesh/vagrant
-        image: ubuntu/bionic/64
-        key: ~/.ssh/id_rsa.pub
-    vagrant_remote:
-      cm:
-        active: false
-        heading: Vagrant
-        host: TBD
-        label: TBD
-        kind: TBD
-        version: TBD
-      credentials:
-        local: false
-        hostname: 127.0.0.1
-        username: albert
-        key: ~/.ssh/id_rsa.pub
-      default:
-        path: ~/.cloudmesh/vagrant
   data:
     bug:
       comment: this type is not supported use storage instead
@@ -554,70 +480,3 @@ cloudmesh:
           MONGO_PATH: ~/.cloudmesh/mongodb
           MONGO_LOG: ~/.cloudmesh/mongodb/log
           MONGO_HOME: ~/local/mongo
-  cluster:
-    bigred2:
-      cm: missing
-      active: false
-      name: bigred2
-      label: bigred
-      address: bigred2.iu.edu
-      credentials:
-        username: TBD
-        pulickey: ~/.ssh/id_rsa.pub
-    karst:
-      cm: missing
-      active: false
-      credentials:
-        username: TBD
-        pulickey: ~/.ssh/id_rsa.pub
-    slurm-taito:
-      cm: missing
-      active: false
-      name: taito
-      credentials:
-        sshconfigpath: ~/.ssh/config
-    clustera:
-      cm: missing
-      active: false
-      computer_a:
-        name: computer_a
-        label: one
-        address: localhost
-        credentials:
-          username: TBD
-          pulickey: ~/.ssh/id_rsa.pub
-      computer_b:
-        cm: missing
-        name: computer_b
-        label: two
-        address: localhost
-        credentials:
-          username: TBD
-          pulickey: ~/.ssh/id_rsa.pub
-    vcluster_test1:
-      cm: missing
-      active: false
-      computer_a:
-        name: machine1
-        label: one
-        address: localhost
-        credentials:
-          sshconfigpath: ~/.ssh/config
-      computer_b:
-        name: computer_a
-        label: one
-        address: localhost
-        credentials:
-          username: TBD
-          pulickey: ~/.ssh/id_rsa.pub
-    vcluster_test2:
-      cm: missing
-      active: false
-      c2:
-        name: machine2
-        label: two
-        address: localhost
-        credentials:
-          sshconfigpath: ~/.ssh/config
-  test:
-    nested: Gregor
