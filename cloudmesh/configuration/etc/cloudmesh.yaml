@@ -480,3 +480,15 @@ cloudmesh:
           MONGO_PATH: ~/.cloudmesh/mongodb
           MONGO_LOG: ~/.cloudmesh/mongodb/log
           MONGO_HOME: ~/local/mongo
+  registry:
+    microservice:
+      cm:
+        active: true
+        heading: microservice registry
+        host: TBD
+        label: microservice
+        kind: registry
+        version: latest
+        service: registry
+      default:
+        protocol: pickle
