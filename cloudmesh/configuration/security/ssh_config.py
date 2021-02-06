@@ -61,12 +61,12 @@ class ssh_config(object):
         hosts = {}
         host = "NA"
         for line in content:
-            if line[0].startswith('#') or line[0] is '':
+            if line[0].startswith('#') or line[0] == '':
                 pass  # ignore line
             else:
                 attribute = line[0]
                 value = line[1]
-                if attribute.lower().strip() in ['Host', 'host']:
+                if attribute.lower().strip() == 'host':
                     host = value
                     hosts[host] = {'host': host}
                 else:
@@ -81,7 +81,7 @@ class ssh_config(object):
     def list(self):
         """
         list the hosts in the config file
-        :return: 
+        :return:
         """
         return list(self.hosts.keys())
 
@@ -94,8 +94,9 @@ class ssh_config(object):
 
     def status(self):
         """
-        executes a test with the given ssh config if a login is possible. 
-           TODO: not yet implemented
+        executes a test with the given ssh config if a login is possible.
+
+        TODO: not yet implemented
         """
         raise NotImplementedError()
 
@@ -104,7 +105,7 @@ class ssh_config(object):
         """
         login to the host defines in .ssh/config by name
         :param name: the name of the host as defined in the config file
-        :return: 
+        :return:
         """
         os.system("ssh {0}".format(name))
 
@@ -114,7 +115,7 @@ class ssh_config(object):
         execute the command on the named host
         :param name: the name of the host in config
         :param command: the command to be executed
-        :return: 
+        :return:
         """
         if name in ["localhost"]:
             r = '\n'.join(Shell.sh("-c", command).split()[-1:])
@@ -126,7 +127,7 @@ class ssh_config(object):
         """
         execute the command on the localhost
         :param command: the command to execute
-        :return: 
+        :return:
         """
         return self.execute("localhost", command)
 
@@ -155,7 +156,7 @@ class ssh_config(object):
         :param username: the username
         :param force: not used
         :param verbose: prints debug messages
-        :return: 
+        :return:
         """
         data = {
             "host": host,

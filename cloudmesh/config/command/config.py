@@ -1,7 +1,3 @@
-import os
-import re
-import sys
-
 import oyaml as yaml
 from cloudmesh.common.FlatDict import flatten
 from cloudmesh.common.Printer import Printer
@@ -12,6 +8,7 @@ from cloudmesh.common.util import path_expand
 from cloudmesh.configuration.Config import Config
 from cloudmesh.shell.command import PluginCommand
 from cloudmesh.shell.command import command, map_parameters
+
 
 class ConfigCommand(PluginCommand):
 
@@ -62,13 +59,13 @@ class ConfigCommand(PluginCommand):
 
              Key generation
 
-                Keys can be generated with 
+                Keys can be generated with
 
-                    cms key gen (ssh | pem) 
+                    cms key gen (ssh | pem)
 
                 Key validity and password can be verified with
 
-                    cms key verify (ssh | pem) 
+                    cms key verify (ssh | pem)
 
                 key verify (ssh | pem) [--filename=FILENAME] [--pub]
 
@@ -104,8 +101,8 @@ class ConfigCommand(PluginCommand):
                        "output",
                        "secrets")
 
-        source = arguments.SOURCE or path_expand("~/.cloudmesh/cloudmesh.yaml")
-        destination = source + ".enc"
+        # source = arguments.SOURCE or path_expand("~/.cloudmesh/cloudmesh.yaml")
+        # destination = source + ".enc"
 
         if arguments.cloud and arguments.edit and arguments.NAME is None:
             path = path_expand("~/.cloudmesh/cloudmesh.yaml")

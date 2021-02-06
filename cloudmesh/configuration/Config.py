@@ -25,6 +25,7 @@ from cloudmesh.common.location import Location
 
 # see also https://github.com/cloudmesh/client/blob/main/cloudmesh_client/cloud/register.py
 
+
 class Active(object):
 
     def __init__(self):
@@ -133,7 +134,8 @@ class Config(object):
         :return:
         """
         if url is None:
-            url = "https://raw.githubusercontent.com/cloudmesh/cloudmesh-configuration/main/cloudmesh/configuration/etc/cloudmesh.yaml"
+            url = "https://raw.githubusercontent.com/cloudmesh/"\
+                  "cloudmesh-configuration/main/cloudmesh/configuration/etc/cloudmesh.yaml"
         if destination is None:
             destination = "~/.cloudmesh/cloudmesh.yaml"
 
@@ -167,7 +169,6 @@ class Config(object):
             # content = path_expand(content)
             content = self.spec_replace(content)
             self.data = yaml.load(content, Loader=yaml.SafeLoader)
-
 
         # print (self.data["cloudmesh"].keys())
 
@@ -272,9 +273,7 @@ class Config(object):
                 Console.warning("You may have two cloudmesh.yaml file.")
                 Console.warning("We use: {config_path is use}")
 
-
         banner("Check Version")
-
 
         dist_version = config.version()
         yaml_version = config["cloudmesh.version"]
@@ -289,8 +288,8 @@ class Config(object):
             print("")
             print("See also: ")
             print()
-            print(
-                "  https://github.com/cloudmesh/cloudmesh-configuration/blob/main/cloudmesh/configuration/etc/cloudmesh.yaml")
+            print("  https://github.com/cloudmesh/cloudmesh-configuration/"
+                  "blob/main/cloudmesh/configuration/etc/cloudmesh.yaml")
 
         banner("Check for TAB Characters")
 
@@ -302,7 +301,7 @@ class Config(object):
         banner("yamllint")
 
         try:
-            import yamllint
+            import yamllint  # noqa: F401
 
             options = \
                 '-f colored ' \
@@ -344,9 +343,7 @@ class Config(object):
                 location = [
                     i for i in range(len(line)) if line.startswith('\t', i)]
                 if verbose:
-                    Console.error(
-                        "Tab found in line {line_no} and column(s) {location}"
-                            .format(**locals()))
+                    Console.error(f"Tab found in line {line_no} and column(s) {location}")
                     line_no += 1
         return file_contains_tabs
 
@@ -469,9 +466,7 @@ class Config(object):
                 if mask_secrets:
                     for attribute in secrets:
                         if attribute + ":" in line:
-                            line = line.split(":")[0] + \
-                                   Console.text(message=": '********'",
-                                                color='BLUE')
+                            line = line.split(":")[0] + Console.text(message=": '********'", color='BLUE')
                             break
             for colorme in colors:
                 if colorme in line:
@@ -592,8 +587,7 @@ class Config(object):
         :param value: value to be set.
         """
         self.data['cloudmesh']['default']['cloud'] = value
-        print("Setting env parameter cloud to: " +
-              self.data['cloudmesh']['default']['cloud'])
+        print("Setting env parameter cloud to: " + self.data['cloudmesh']['default']['cloud'])
 
         yaml_file = self.data.copy()
         with open(self.config_path, "w") as stream:
@@ -708,7 +702,4 @@ class Config(object):
             config.save()
         except Exception as e:
             print(e)
-            Console.error(
-                "could not find the attribute '{attribute}' in the yaml file."
-                    .format(**locals()))
-
+            Console.error(f"could not find the attribute '{attribute}' in the yaml file.")

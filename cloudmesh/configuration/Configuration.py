@@ -1,20 +1,20 @@
 import re
 import shutil
+import sys
 from os import mkdir
 from os.path import isfile, realpath, exists, dirname
 from pathlib import Path
 from shutil import copyfile
 
-from cloudmesh.common.dotdict import dotdict
 import munch
 import oyaml as yaml
 from cloudmesh.common.FlatDict import FlatDict
 from cloudmesh.common.console import Console
+from cloudmesh.common.dotdict import dotdict
 from cloudmesh.common.util import backup_name
 from cloudmesh.common.util import path_expand
 from cloudmesh.common.variables import Variables
-
-import sys
+from cloudmesh.configuration.Config import Config
 
 """
 This clas is similar to Config, but does not contain a shared state for the location where to find it.
@@ -28,8 +28,7 @@ cat was removed
 
 class Configuration(object):
 
-    def __init__(self,
-                 path='~/.cloudmesh/cloudmesh.yaml'):
+    def __init__(self, path='~/.cloudmesh/cloudmesh.yaml'):
         """
         Initialize the Config class.
 
@@ -49,7 +48,6 @@ class Configuration(object):
 
     def default(self):
         return dotdict(self.data["cloudmesh"]["default"])
-
 
     def load(self, path=None):
         """
@@ -195,17 +193,6 @@ class Configuration(object):
 
     def __str__(self):
         return self.cat_dict(self.data)
-
-    @staticmethod
-    def cat_dict(d,
-                 mask_secrets=True,
-                 attributes=None,
-                 color=None):
-        kluge = yaml.dump(d,
-                          default_flow_style=False, indent=2)
-        content = kluge.splitlines()
-
-        return Config.cat_lines(content, mask_secrets=mask_secrets)
 
     def get(self, key, default=None):
         """
@@ -388,9 +375,20 @@ class Configuration(object):
             config.save()
         except Exception as e:
             print(e)
-            Console.error(
-                "could not find the attribute '{attribute}' in the yaml file."
-                    .format(**locals()))
+            Console.error(f"could not find the attribute '{attribute}' in the yaml file.")
+
+    """
+    @staticmethod
+    def cat_dict(d,
+                 mask_secrets=True,
+                 attributes=None,
+                 color=None):
+        kluge = yaml.dump(d,
+                          default_flow_style=False, indent=2)
+        content = kluge.splitlines()
+
+        return Config.cat_lines(content, mask_secrets=mask_secrets)
+    """
 
     def cat_dict(self, d):
         kluge = yaml.dump(d,
