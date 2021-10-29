@@ -33,7 +33,6 @@ def readfile(filename):
 # cloudmesh-cloud
 
 requiers = """
-pathlib
 munch
 requests
 oyaml
