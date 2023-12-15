@@ -15,9 +15,9 @@
 # limitations under the License.                                          #
 # ------------------------------------------------------------------------#
 
-import io
 
-from setuptools import find_packages, setup
+from setuptools import find_packages, find_namespace_packages, setup
+import io
 import os
 
 def readfile(filename):
@@ -33,19 +33,11 @@ def readfile(filename):
 # cloudmesh-cloud
 
 requiers = """
+cloudmesh-common
 munch
 requests
 oyaml
 """.splitlines()
-
-requiers_cloudmesh = """
-cloudmesh-common
-""".splitlines()
-
-if "TESTING" not in os.environ:
-    requiers = requiers + requiers_cloudmesh
-
-
 
 version = readfile("VERSION").strip()
 
@@ -68,7 +60,14 @@ setup(
     version=version,
     license="Apache 2.0",
     url=URL,
-    packages=find_packages(exclude=("tests")),
+    packages=find_namespace_packages(
+        exclude=("tests",
+                 "deprecated",
+                 "propose",
+                 "examples",
+                 "conda"),
+        include=['cloudmesh']),
+    package_dir={"cloudmesh": "cloudmesh"},
     include_package_data=True,
     package_data={
         "": ["*.yaml"],
@@ -90,10 +89,7 @@ setup(
         "Operating System :: POSIX :: Linux",
         "Operating System :: Microsoft :: Windows :: Windows 10",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.12",
         "Topic :: Internet",
         "Topic :: Scientific/Engineering",
         "Topic :: Software Development :: Libraries",
@@ -109,5 +105,4 @@ setup(
         "coverage",
     ],
     zip_safe=False,
-    namespace_packages=['cloudmesh'],
 )

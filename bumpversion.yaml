@@ -1,0 +1,5 @@
+bumpversion:
+- cloudmesh/configuration/etc/cloudmesh.yaml
+- cloudmesh/bumpversion/__version__.py
+- cloudmesh/bumpversion/__init__.py
+- VERSION
