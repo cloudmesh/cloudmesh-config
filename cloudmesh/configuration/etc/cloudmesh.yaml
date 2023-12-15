@@ -1,5 +1,5 @@
 cloudmesh:
-  version: 4.3.9
+  version: 4.4.1
   profile:
     firstname: TBD
     lastname: TBD
@@ -14,12 +14,6 @@ cloudmesh:
     secpath: ~/.cloudmesh/security
     secrets: []
     exceptions: []
-  iu:
-    user: TBD
-    host: r-003
-    gpu: 0
-    port: TBD
-    reservation: lijguo_11
   default:
     group: cloudmesh
     experiment: base
