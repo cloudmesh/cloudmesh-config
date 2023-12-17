@@ -47,7 +47,10 @@ class Configuration(object):
                 self.variable_database[name] = str(False)
 
     def default(self):
-        return dotdict(self.data["cloudmesh"]["default"])
+        try:
+            return dotdict(self.data["cloudmesh"]["default"])
+        except:
+            return None
 
     def load(self, path=None):
         """
@@ -89,16 +92,21 @@ class Configuration(object):
 
         self.set_debug_defaults()
 
-        default = self.default()
+        try:
+            default = self.default()
+            if default is not None:
+                for name in self.default():
+                    if name not in self.variable_database:
+                        self.variable_database[name] = default[name]
+                if "cloud" in default:
+                    self.cloud = default["cloud"]
+                else:
+                    self.cloud = None
 
-        for name in self.default():
-            if name not in self.variable_database:
-                self.variable_database[name] = default[name]
+        except Exception as e:
+            print (e)
 
-        if "cloud" in default:
-            self.cloud = default["cloud"]
-        else:
-            self.cloud = None
+
 
     def create(self, path=None):
         """

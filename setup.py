@@ -25,19 +25,7 @@ def readfile(filename):
         return stream.read()
 
 
-# requiers = readfile ('requirements.txt')
-
-# pytz==2016.10
-
-# cloudmesh-common
-# cloudmesh-cloud
-
-requiers = """
-cloudmesh-common
-munch
-requests
-oyaml
-""".splitlines()
+requiers = readfile ('requirements.txt')
 
 version = readfile("VERSION").strip()
 
