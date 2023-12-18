@@ -27,11 +27,23 @@ from cloudmesh.common.location import Location
 
 
 class Active(object):
+    """
+    Class to manage active clouds.
+    """
 
     def __init__(self):
+        """
+        Initialize the Active class.
+        """
         self.config = Config()
 
     def clouds(self):
+        """
+        Get the names of active clouds.
+
+        Returns:
+            list: Names of active clouds.
+        """
         names = []
         entries = self.config["cloudmesh"]["cloud"]
         for entry in entries:
@@ -43,6 +55,9 @@ class Active(object):
 
 
 class Config(object):
+    """
+    Class to manage configuration settings.
+    """
     __shared_state = {}
 
     def __init__(self,
@@ -51,9 +66,9 @@ class Config(object):
         """
         Initialize the Config class.
 
-        :param config_path: A local file path to cloudmesh yaml config
-            with a root element `cloudmesh`.
-            Default: `~/.cloudmesh/cloudmesh.yaml`
+        Args:
+            config_path (str): A local file path to cloudmesh yaml config with a root element `cloudmesh`.
+                Default: `~/.cloudmesh/cloudmesh.yaml`
         """
 
         self.__dict__ = self.__shared_state
@@ -76,10 +91,22 @@ class Config(object):
 
     @staticmethod
     def version():
+        """
+        Get the version of cloudmesh yaml.
+
+        Returns:
+            str: Version of cloudmesh yaml.
+        """
         return cloudmesh_yaml_version
 
     @staticmethod
     def secrets():
+        """
+        Get a list of secret keys.
+
+        Returns:
+            list: List of secret keys.
+        """
         return [
             "AZURE_SUBSCRIPTION_ID",
             "AZURE_TENANT_ID",
@@ -106,6 +133,12 @@ class Config(object):
 
     @staticmethod
     def exceptions():
+        """
+        Get a list of exceptions.
+
+        Returns:
+            list: List of exceptions.
+        """
         return [
             "cloudmesh.version",
             "cloudmesh.security.publickey",
@@ -124,14 +157,11 @@ class Config(object):
               url=None,
               destination=None):
         """
+        Fetch the cloudmesh yaml file from a given URL and place it in the specified destination directory.
 
-        fetches the cloudmesh yaml file and places it in the given
-        destination dir
-
-        :param url: The url of the cloudmesh.yaml file from github
-        :param destination: The destination file. If not specified it is the
-                             home dir.
-        :return:
+        Args:
+            url (str): The URL of the cloudmesh.yaml file from github.
+            destination (str): The destination file. If not specified, it is the home dir.
         """
         if url is None:
             url = "https://raw.githubusercontent.com/cloudmesh/"\
@@ -150,11 +180,10 @@ class Config(object):
 
     def load(self, config_path=None):
         """
-        loads a configuration file
-        :param config_path:
-        :type config_path:
-        :return:
-        :rtype:
+        Load a configuration file.
+
+        Args:
+            config_path (str): Path to the configuration file.
         """
 
         # VERBOSE("Load config")
@@ -201,16 +230,19 @@ class Config(object):
 
     def create(self, config_path=None):
         """
-        creates the cloudmesh.yaml file in the specified location. The
-        default is
+         Create the cloudmesh.yaml file in the specified location if it does not exist.
 
-            ~/.cloudmesh/cloudmesh.yaml
+         Args:
+             config_path (str): The yaml file to create.
 
-        If the file does not exist, it is initialized with a default. You still
-        need to edit the file.
+        Note:
+            The default is
 
-        :param config_path:  The yaml file to create
-        :type config_path: string
+                ~/.cloudmesh/cloudmesh.yaml
+
+            If the file does not exist, it is initialized with a default. You still
+            need to edit the file.
+
         """
         self.config_path = Path(path_expand(config_path or self.location.config())).resolve()
 
@@ -245,8 +277,15 @@ class Config(object):
     #
 
     def check(self, path=None):
-        # bug: path not needed
+        """
+        Check various aspects of the configuration.
 
+        Args:
+            path (str): Path to the configuration file.
+
+        BUG:
+            path not needed
+        """
         error = False
         # path = path_expand(path or self.location.config())
 
@@ -321,15 +360,17 @@ class Config(object):
 
     @staticmethod
     def check_for_tabs(filename, verbose=True):
-        """identifies if the file contains tabs and returns True if it
-        does. It also prints the location of the lines and columns. If
-        verbose is set to False, the location is not printed.
-
-        :param verbose: if true prints issues
-        :param filename: the filename
-        :type filename: str
-        :rtype: True if there are tabs in the file
         """
+        Check if the file contains tabs and return True if it does. Print the location of the lines and columns.
+
+        Args:
+            filename (str): The filename.
+            verbose (bool): If True, print issues.
+
+        Returns:
+            bool: True if there are tabs in the file.
+        """
+
         filename = path_expand(filename)
         file_contains_tabs = False
 
@@ -349,18 +390,17 @@ class Config(object):
 
     def save(self, path=None, backup=True):
         """
-        #
-        # not tested
-        #
-        saves th dic into the file. It also creates a backup if set to true The
-        backup filename  appends a .bak.NO where number is a number that is not
-        yet used in the backup directory.
+        Save the configuration into the file.
 
-        :param path:
-        :type path:
-        :return:
-        :rtype:
+        Args:
+            path (str): Path to the configuration file.
+            backup (bool): If True, create a backup.
+
+        Note: Not tested.
         """
+        #saves th dic into the file. It also creates a backup if set to true The
+        #backup filename  appends a .bak.NO where number is a number that is not
+        #yet used in the backup directory.
         path = path_expand(path or self.location.config())
         if backup:
             destination = backup_name(path)
@@ -370,7 +410,15 @@ class Config(object):
             yaml.safe_dump(yaml_file, stream, default_flow_style=False)
 
     def spec_replace(self, spec):
+        """
+        Replace placeholders in the yaml content.
 
+        Args:
+            spec (str): YAML content.
+
+        Returns:
+            str: Modified YAML content.
+        """
         # TODO: BUG: possible bug redundant char \{ in escape
         #            may be relevant for python 2 may behave differnet in
         #            differnt python versions, has to be checked. a unit test
@@ -396,10 +444,14 @@ class Config(object):
 
     def credentials(self, kind, name):
         """
+        Get credentials for a resource.
 
-        :param kind: the first level of attributes after cloudmesh
-        :param name: the name of the resource
-        :return:
+        Args:
+            kind (str): The first level of attributes after cloudmesh.
+            name (str): The name of the resource.
+
+        Returns:
+            dict: Credentials for the specified resource.
         """
         return self.data["cloudmesh"][kind][name]["credentials"]
 
@@ -424,14 +476,29 @@ class Config(object):
                         **locals()))
 
     def set_debug_defaults(self):
+        """
+        Set debug defaults.
+        """
         for name in ["trace", "debug"]:
             if name not in self.variable_database:
                 self.variable_database[name] = str(False)
 
     def dict(self):
+        """
+        Get the configuration data as a dictionary.
+
+        Returns:
+            dict: Configuration data.
+        """
         return self.data
 
     def __str__(self):
+        """
+        Get a string representation of the configuration.
+
+        Returns:
+            str: String representation.
+        """
         return self.cat_dict(self.data)
 
     @staticmethod
@@ -439,6 +506,18 @@ class Config(object):
                  mask_secrets=True,
                  attributes=None,
                  color=None):
+        """
+         Get a string representation of a dictionary.
+
+         Args:
+             d (dict): Dictionary to represent as a string.
+             mask_secrets (bool): If True, mask secrets in the output.
+             attributes (list): List of attributes to mask.
+             color (list): List of colors.
+
+         Returns:
+             str: String representation of the dictionary.
+         """
         kluge = yaml.dump(d,
                           default_flow_style=False, indent=2)
         content = kluge.splitlines()
@@ -450,6 +529,18 @@ class Config(object):
                   mask_secrets=True,
                   attributes=None,
                   color=None):
+        """
+        Get a string representation of lines.
+
+        Args:
+            content (list): List of lines.
+            mask_secrets (bool): If True, mask secrets in the output.
+            attributes (list): List of attributes to mask.
+            color (list): List of colors.
+
+        Returns:
+            str: String representation of lines.
+        """
 
         colors = ['TBD', "xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "12345", "xxxx"]
         if color:
@@ -487,6 +578,18 @@ class Config(object):
             attributes=None,
             path="~/.cloudmesh/cloudmesh.yaml",
             color=None):
+        """
+        Get a string representation of the configuration.
+
+        Args:
+            mask_secrets (bool): If True, mask secrets in the output.
+            attributes (list): List of attributes to mask.
+            path (str): Path to the configuration file.
+            color (list): List of colors.
+
+        Returns:
+            str: String representation of the configuration.
+        """
 
         _path = path_expand("~/.cloudmesh/cloudmesh.yaml")
         with open(_path) as f:
@@ -496,8 +599,7 @@ class Config(object):
                                 attributes=None, color=None)
 
     def get(self, key, default=None):
-        """
-        A helper function for reading values from the config without
+        """A helper function for reading values from the config without
         a chain of `get()` calls.
 
         Usage:
@@ -505,8 +607,9 @@ class Config(object):
             default_db = conf.get('default.db')
             az_credentials = conf.get('data.service.azure.credentials')
 
-        :param default:
-        :param key: A string representing the value's path in the config.
+        Args:
+            default
+            key: A string representing the value's path in the config.
         """
         try:
             return self.__getitem__(key)
@@ -527,16 +630,16 @@ class Config(object):
         self.set(key, value)
 
     def set(self, key, value):
-        """
-        A helper function for setting the default cloud in the config without
+        """A helper function for setting the default cloud in the config without
         a chain of `set()` calls.
 
         Usage:
             mongo_conn = conf.set('db.mongo.MONGO_CONNECTION_STRING',
                          "https://localhost:3232")
 
-        :param key: A string representing the value's path in the config.
-        :param value: value to be set.
+        Args:
+            key: A string representing the value's path in the config.
+            value: value to be set.
         """
 
         if value.lower() in ['true', 'false']:
@@ -575,16 +678,16 @@ class Config(object):
             yaml.safe_dump(yaml_file, stream, default_flow_style=False)
 
     def set_cloud(self, key, value):
-        """
-        A helper function for setting the default cloud in the config without
+        """A helper function for setting the default cloud in the config without
         a chain of `set()` calls.
 
         Usage:
             mongo_conn = conf.get('db.mongo.MONGO_CONNECTION_STRING',
                                   "https://localhost:3232")
 
-        :param key: A string representing the value's path in the config.
-        :param value: value to be set.
+        Args:
+            key: A string representing the value's path in the config.
+            value: value to be set.
         """
         self.data['cloudmesh']['default']['cloud'] = value
         print("Setting env parameter cloud to: " + self.data['cloudmesh']['default']['cloud'])
@@ -601,12 +704,14 @@ class Config(object):
     #     return self.__getitem__(item)
 
     def __getitem__(self, item):
-        """
-        gets an item form the dict. The key is . separated
+        """gets an item form the dict. The key is . separated
         use it as follows get("a.b.c")
-        :param item:
-        :type item:
-        :return:
+
+        Args:
+            item
+
+        Returns:
+
         """
         try:
             if "." in item:
@@ -631,15 +736,17 @@ class Config(object):
         return element
 
     def __delitem__(self, item):
-        """
-        #
+        """#
         # BUG THIS DOES NOT WORK
         #
         gets an item form the dict. The key is . separated
         use it as follows get("a.b.c")
-        :param item:
-        :type item:
-        :return:
+
+        Args:
+            item
+
+        Returns:
+
         """
         try:
             if "." in item:
@@ -662,22 +769,27 @@ class Config(object):
             sys.exit(1)
 
     def search(self, key, value=None):
-        """
-        search("cloudmesh.cloud.*.cm.active", True)
-        :param key:
-        :param value:
-        :return:
+        """search("cloudmesh.cloud.*.cm.active", True)
+
+        Args:
+            key
+            value
+
+        Returns:
+
         """
         flat = FlatDict(self.data, sep=".")
         result = flat.search(key, value)
         return result
 
     def edit(self, attribute):
-        """
-        edits the dict specified by the attribute and fills out all TBD values.
-        :param attribute:
-        :type attribute: string
-        :return:
+        """edits the dict specified by the attribute and fills out all TBD values.
+
+        Args:
+            attribute (string)
+
+        Returns:
+
         """
 
         Console.ok("Filling out: {attribute}".format(attribute=attribute))

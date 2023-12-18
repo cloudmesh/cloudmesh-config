@@ -27,39 +27,50 @@ cat was removed
 
 
 class Configuration(object):
+    """Configuration management class for Cloudmesh.
+
+        This class allows you to manage and interact with the Cloudmesh configuration file (`cloudmesh.yaml`).
+        It provides methods to load, save, and manipulate the configuration.
+
+        Args:
+            path (str): Path to the Cloudmesh configuration file (`cloudmesh.yaml`).
+                        Default is `~/.cloudmesh/cloudmesh.yaml`.
+        """
 
     def __init__(self, path='~/.cloudmesh/cloudmesh.yaml'):
-        """
-        Initialize the Config class.
+        """Initialize the Config class.
 
-        :param config_path: A local file path to cloudmesh yaml config
-            with a root element `cloudmesh`.
-            Default: `~/.cloudmesh/cloudmesh.yaml`
+        Args:
+            path (str): A local file path to the Cloudmesh YAML config with a root element `cloudmesh`.
+                        Default: `~/.cloudmesh/cloudmesh.yaml`.
         """
-
         self.path = path
 
         self.load(path=self.path)
 
     def set_debug_defaults(self):
+        """Set default values for debug-related configurations if not already present."""
         for name in ["trace", "debug"]:
             if name not in self.variable_database:
                 self.variable_database[name] = str(False)
 
     def default(self):
+        """Retrieve the default configurations.
+
+        Returns:
+            dotdict: A dotdict representing the default configurations.
+        """
         try:
             return dotdict(self.data["cloudmesh"]["default"])
         except:
             return None
 
     def load(self, path=None):
-        """
-        loads a configuration file
-        :param path:
-        :type path:
-        :return:
-        :rtype:
-        """
+        """Load the Cloudmesh configuration file.
+
+         Args:
+             path (str): Path to the Cloudmesh configuration file (`cloudmesh.yaml`).
+         """
 
         # VERBOSE("Load config")
         self.filename = Path(path_expand(path))
@@ -109,8 +120,7 @@ class Configuration(object):
 
 
     def create(self, path=None):
-        """
-        creates the cloudmesh.yaml file in the specified location. The
+        """creates the cloudmesh.yaml file in the specified location. The
         default is
 
             ~/.cloudmesh/cloudmesh.yaml
@@ -118,8 +128,8 @@ class Configuration(object):
         If the file does not exist, it is initialized with a default. You still
         need to edit the file.
 
-        :param path:  The yaml file to create
-        :type path: string
+        Args:
+            path (str): Path to the Cloudmesh configuration file (`cloudmesh.yaml`).
         """
         self.path = Path(path_expand(path))
 
@@ -150,18 +160,17 @@ class Configuration(object):
                 d[key] = defaults[key]
 
     def save(self, path=None, backup=True):
-        """
-        #
-        # not tested
-        #
+        """Save the configuration to the Cloudmesh configuration file.
+
+        Args:
+            path (str): Path to the Cloudmesh configuration file (`cloudmesh.yaml`).
+            backup (bool): If True, create a backup of the existing configuration file before saving.
+
+        Note: not tested
+
         saves th dic into the file. It also creates a backup if set to true The
         backup filename  appends a .bak.NO where number is a number that is not
         yet used in the backup directory.
-
-        :param path:
-        :type path:
-        :return:
-        :rtype:
         """
         path = path_expand(path or self.location.config())
         if backup:
@@ -172,12 +181,20 @@ class Configuration(object):
             yaml.safe_dump(yaml_file, stream, default_flow_style=False)
 
     def spec_replace(self, spec):
+        """Replace placeholders in the specification with actual values.
 
-        # TODO: BUG: possible bug redundant char \{ in escape
-        #            may be relevant for python 2 may behave differnet in
-        #            differnt python versions, has to be checked. a unit test
-        #            should be created to just check the \{ issue
-        #
+        Args:
+            spec (str): The specification string.
+
+        Returns:
+            str: The specification with placeholders replaced.
+
+        TODO: BUG: possible bug redundant char \{ in escape
+                    may be relevant for python 2 may behave differnet in
+                    differnt python versions, has to be checked. a unit test
+                    should be created to just check the \{ issue
+        """
+
         variables = re.findall(r"\{\w.+\}", spec)
 
         for i in range(0, len(variables)):
@@ -197,14 +214,23 @@ class Configuration(object):
         return spec
 
     def dict(self):
+        """Get the configuration as a dictionary.
+
+        Returns:
+            dict: The configuration dictionary.
+        """
         return self.data
 
     def __str__(self):
+        """Get a string representation of the configuration.
+
+        Returns:
+            str: The string representation of the configuration.
+        """
         return self.cat_dict(self.data)
 
     def get(self, key, default=None):
-        """
-        A helper function for reading values from the config without
+        """A helper function for reading values from the config without
         a chain of `get()` calls.
 
         Usage:
@@ -212,8 +238,9 @@ class Configuration(object):
             default_db = conf.get('default.db')
             az_credentials = conf.get('data.service.azure.credentials')
 
-        :param default:
-        :param key: A string representing the value's path in the config.
+        Args:
+            default
+            key (str): A string representing the value's path in the config.
         """
         try:
             return self.__getitem__(key)
@@ -231,19 +258,25 @@ class Configuration(object):
             sys.exit(1)
 
     def __setitem__(self, key, value):
+        """Set the value for a specific key in the configuration.
+
+        Args:
+            key (str): The key for which to set the value.
+            value: The value to set for the specified key.
+        """
         self.set(key, value)
 
     def set(self, key, value):
-        """
-        A helper function for setting the default cloud in the config without
+        """A helper function for setting the default cloud in the config without
         a chain of `set()` calls.
 
         Usage:
             mongo_conn = conf.set('db.mongo.MONGO_CONNECTION_STRING',
                          "https://localhost:3232")
 
-        :param key: A string representing the value's path in the config.
-        :param value: value to be set.
+        Args:
+            key (str): The key for which to set the value.
+            value: The value to set for the specified key.
         """
 
         if value.lower() in ['true', 'false']:
@@ -282,12 +315,14 @@ class Configuration(object):
             yaml.safe_dump(yaml_file, stream, default_flow_style=False)
 
     def __getitem__(self, item):
-        """
-        gets an item form the dict. The key is . separated
+        """gets an item form the dict. The key is . separated
         use it as follows get("a.b.c")
-        :param item:
-        :type item:
-        :return:
+
+        Args:
+            item (str): The item for which to retrieve the value.
+
+        Returns:
+            Any: The value for the specified item.
         """
         try:
             if "." in item:
@@ -312,15 +347,15 @@ class Configuration(object):
         return element
 
     def __delitem__(self, item):
-        """
-        #
-        # BUG THIS DOES NOT WORK
-        #
-        gets an item form the dict. The key is . separated
-        use it as follows get("a.b.c")
-        :param item:
-        :type item:
-        :return:
+        """Delete a specific item from the configuration.
+
+        Args:
+            item (str): The item to delete from the configuration.
+
+        BUG: THIS DOES NOT WORK
+
+            gets an item form the dict. The key is . separated
+            use it as follows get("a.b.c")
         """
         try:
             if "." in item:
@@ -343,22 +378,30 @@ class Configuration(object):
             sys.exit(1)
 
     def search(self, key, value=None):
-        """
-        search("cloudmesh.cloud.*.cm.active", True)
-        :param key:
-        :param value:
-        :return:
+        """Search for items in the configuration based on a key and optional value.
+
+        Args:
+              key (str): The key to search for.
+              value: The value to match (optional).
+
+        Returns:
+              dict: A dictionary containing the search results.
+
+        Example:
+              search("cloudmesh.cloud.*.cm.active", True)
         """
         flat = FlatDict(self.data, sep=".")
         result = flat.search(key, value)
         return result
 
     def edit(self, attribute):
-        """
-        edits the dict specified by the attribute and fills out all TBD values.
-        :param attribute:
-        :type attribute: string
-        :return:
+        """Edit the dict specified by the attribute and fills out all TBD values.
+
+        Args:
+            attribute (string)
+
+        Returns:
+
         """
 
         Console.ok("Filling out: {attribute}".format(attribute=attribute))
@@ -399,6 +442,14 @@ class Configuration(object):
     """
 
     def cat_dict(self, d):
+        """Get a string representation of a dictionary.
+
+        Args:
+            d (dict): The dictionary to represent as a string.
+
+        Returns:
+            str: A string representation of the dictionary.
+        """
         kluge = yaml.dump(d,
                           default_flow_style=False, indent=2)
         content = kluge.splitlines()
@@ -406,10 +457,23 @@ class Configuration(object):
         return self.cat_lines(content)
 
     def cat_lines(self, content):
+        """Get a string representation of lines.
+
+        Args:
+            content (list): The list of lines to represent as a string.
+
+        Returns:
+            str: A string representation of the lines.
+        """
         lines = '\n'.join(content)
         return lines
 
     def cat(self):
+        """Get a string representation of the configuration.
+
+         Returns:
+             str: A string representation of the configuration.
+         """
 
         _path = path_expand(self.path)
         with open(_path) as f:
