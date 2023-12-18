@@ -8,8 +8,6 @@ import os.path
 
 from cloudmesh.common.Shell import Subprocess
 from cloudmesh.common.util import tempdir
-from six import itervalues
-
 
 # TODO:  use our simple subprocess wrapper ?
 
@@ -89,14 +87,11 @@ class AuthorizedKeys(object):
         """
         raise NotImplementedError()
 
-    def __str__(self):
 
+    def __str__(self):
         sio = io.StringIO()
 
-        # TODO: make python 2 and 3 compatible
-        # old: for fingerprint in self._order.itervalues():
-
-        for fingerprint in itervalues(self._order):
+        for fingerprint in self._order.values():
             key = self._keys[fingerprint]
             sio.write(key)
             sio.write('\n')

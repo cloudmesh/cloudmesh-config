@@ -3,8 +3,6 @@
 # pytest -v  tests/test_config.py
 # pytest -v --capture=no  tests/test_config..py::Test_config::<METHODNAME>
 ###############################################################
-import six
-
 import os
 import textwrap
 from pathlib import Path
