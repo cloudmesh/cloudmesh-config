@@ -7,7 +7,7 @@ requires = [
 ]
 
 [project]
-name = "cloudmesh-bumpversion"
+name = "cloudmesh-configuration"
 version = "5.0.17"
 description = "A set of useful APIs for cloudmesh"
 readme = "README.md"
@@ -49,11 +49,13 @@ classifiers = [
 ]
 
 dependencies = [
+    "toml",
     "cloudmesh-cmd5",
 ]
+
 [project.urls]
 "Documentation" = "https://github.com/cloudmesh/cloudmesh-common"
 
 [tool.setuptools.packages.find]
 where = ["src/"]
-include = ["cloudmesh.bumpversion", "cloudmesh.bumpversion.*"]
+include = ["cloudmesh.configuration", "cloudmesh.configuration.*"]
