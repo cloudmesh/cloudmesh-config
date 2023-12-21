@@ -54,7 +54,11 @@ dependencies = [
 ]
 
 [project.urls]
-"Documentation" = "https://github.com/cloudmesh/cloudmesh-common"
+Homepage = "https://github.com/cloudmesh/cloudmesh-configuration"
+Documentation = "https://github.com/cloudmesh/cloudmesh-configuration/blob/main/README.md"
+Repository = "https://github.com/cloudmesh/cloudmesh-configuration.git"
+Issues = "https://github.com/cloudmesh/cloudmesh-configuration/issues"
+Changelog = "https://github.com/cloudmesh/cloudmesh-configuration/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["src/"]
