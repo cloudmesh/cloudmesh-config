@@ -9,6 +9,7 @@ requires = [
 [project]
 name = "cloudmesh-configuration"
 version = "5.0.7"
+
 description = "A simple way to configure applications from yaml files."
 readme = "README.md"
 requires-python = ">=3.8"
