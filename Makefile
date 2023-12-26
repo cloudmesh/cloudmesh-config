@@ -4,6 +4,10 @@ package=$(BASENAME)
 
 include ../cloudmesh-common/makefile.mk
 
+
+readme:	
+	cms man readme -p --command=config
+
 .PHONY: help
 
 help:
